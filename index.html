@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Калькулятор возврата НДФЛ 2026 — сколько можно вернуть</title>
+<meta name="description" content="Считайте вычет онлайн: лечение, ипотека, ИИС, обучение. Вернуть можно за 2023, 2024 и 2025 год. Без 3-НДФЛ — через Т-Банк, Сбер или ЛК ФНС.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1E293B; -webkit-font-smoothing: antialiased; background: #EEF4FF; }
+  * { box-sizing: border-box; }
+  ::selection { background: rgba(78,123,245,0.18); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes floaty { 0%,100% { transform: translate(0,0); } 50% { transform: translate(0,-14px); } }
+  input::placeholder { color: #94A3B8; }
+  input { font-family: inherit; }
+  a { -webkit-tap-highlight-color: transparent; }
+
+  /* ─── MOBILE ─────────────────────────────────── */
+  @media (max-width: 640px) {
+    /* Hero stats: 2 cols */
+    [data-hero-stats] { grid-template-columns: repeat(2, 1fr) !important; }
+
+    /* Section padding */
+    [data-section-pad] { padding-left: 16px !important; padding-right: 16px !important; padding-top: 56px !important; padding-bottom: 40px !important; }
+
+    /* Chapter cards: full width */
+    [data-card] { padding: 18px 16px !important; }
+
+    /* Calculator */
+    [data-calc-grid] { grid-template-columns: 1fr !important; }
+    [data-calc-wrap] { padding: 20px 16px !important; }
+
+    /* Flex items: full width on mobile */
+    [data-flex-item] { min-width: 100% !important; }
+
+    /* Header padding */
+    header { padding: 0 14px !important; }
+
+    /* Hero padding */
+    #hero { padding: 80px 16px 48px !important; }
+
+    /* Carousel: overflow hidden for swipe */
+    [data-carousel-track] { cursor: grab; }
+  }
+
+  @media (max-width: 400px) {
+    /* Very small phones: single stat column */
+    [data-hero-stats] { grid-template-columns: repeat(2, 1fr) !important; }
+    [data-hero-stats] > div { padding: 12px 10px !important; }
+  }
+</style>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 56"><rect width="80" height="56" fill="#EEF4FF"/><rect x="12" y="14" width="56" height="28" rx="6" fill="#4E7BF5" opacity=".18"/><text x="40" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#4E7BF5" font-family="sans-serif">₽</text></svg></template>
+</helmet>
+
+<div style="position:fixed; inset:0; z-index:0; pointer-events:none; background:linear-gradient(145deg, #EEF4FF 0%, #F0EEFF 40%, #E8F6EE 100%);"></div>
+<div style="position:fixed; inset:0; z-index:0; pointer-events:none; background:radial-gradient(ellipse at 18% 14%, rgba(99,146,255,0.16) 0%, transparent 52%), radial-gradient(ellipse at 84% 72%, rgba(52,211,153,0.13) 0%, transparent 52%), radial-gradient(ellipse at 60% 100%, rgba(124,108,255,0.10) 0%, transparent 50%);"></div>
+
+<header style="position:fixed; top:0; left:0; right:0; z-index:50; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; background:rgba(255,255,255,0.62); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border-bottom:1px solid rgba(255,255,255,0.7);">
+  <a href="#hero" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:#1E293B;">
+    <span style="display:flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg,#4E7BF5,#10B981); color:#fff; font-weight:800; font-size:15px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">₽</span>
+    <span style="font-weight:700; font-size:17px; letter-spacing:-0.01em;">НДФЛ-Гид</span>
+  </a>
+  <a href="#calculator" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:11px; background:#4E7BF5; color:#fff; text-decoration:none; font-weight:600; font-size:14px; box-shadow:0 4px 14px rgba(78,123,245,0.32); transition:transform .2s, filter .2s;" style-hover="filter:brightness(1.06); transform:translateY(-1px);">🧮 К калькулятору</a>
+</header>
+
+<!-- PROGRESS SIDEBAR (desktop) -->
+<nav data-sidebar="" style="position:fixed; left:max(24px, calc((100vw - 1180px)/2)); top:50%; transform:translateY(-50%); z-index:40; display:none; flex-direction:column; gap:2px; width:190px;">
+  <div style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#94A3B8; margin-bottom:14px; padding-left:4px;">Ваш путь</div>
+  <sc-for list="{{ steps }}" as="step" hint-placeholder-count="6">
+    <a href="{{ step.href }}" style="display:flex; align-items:center; gap:12px; text-decoration:none; padding:7px 4px; position:relative;">
+      <span style="position:relative; display:flex; align-items:center; justify-content:center; width:22px; height:22px; flex:none;">
+        <span style="width:11px; height:11px; border-radius:50%; background:{{ step.dotColor }}; box-shadow:0 0 0 4px {{ step.ring }}; transition:all .3s;"></span>
+      </span>
+      <span style="font-size:13.5px; font-weight:{{ step.weight }}; color:{{ step.textColor }}; transition:color .3s; line-height:1.25;">{{ step.label }}</span>
+    </a>
+  </sc-for>
+</nav>
+
+<!-- HERO -->
+<section id="hero" data-step="hero" style="position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:96px 24px 64px;">
+  <div style="max-width:760px; width:100%;">
+    <div data-reveal="" style="display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:999px; background:rgba(255,255,255,0.6); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); font-size:13px; font-weight:500; color:#3B62D6; box-shadow:0 4px 16px rgba(78,123,245,0.1); margin-bottom:28px;">
+      <span style="width:7px; height:7px; border-radius:50%; background:#10B981;"></span>
+      Обновлено: 2026 · можно вернуть за 2023, 2024 и 2025
+    </div>
+    <h1 data-reveal="" style="font-size:clamp(32px, 5.4vw, 54px); font-weight:800; line-height:1.1; letter-spacing:-0.025em; margin:0 0 22px; color:#0F172A;">Сколько можно вернуть от <span style="background:linear-gradient(120deg,#4E7BF5,#10B981); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">государства</span> по НДФЛ?</h1>
+    <p data-reveal="" style="font-size:clamp(16px,2.4vw,18px); line-height:1.62; color:#475569; max-width:560px; margin:0 auto 36px;">Если вы работаете по найму и с вашей зарплаты удерживается НДФЛ — часть денег можно вернуть.<br>Это законно, это бесплатно, и это проще, чем кажется!</p>
+    <div data-reveal="" style="display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-bottom:52px;">
+      <a href="#chapter1" style="display:inline-flex; align-items:center; gap:8px; padding:15px 26px; border-radius:14px; background:#4E7BF5; color:#fff; text-decoration:none; font-weight:600; font-size:16px; box-shadow:0 10px 28px rgba(78,123,245,0.34); transition:transform .2s, filter .2s;" style-hover="transform:translateY(-2px); filter:brightness(1.05);">Сколько денег могу вернуть?</a>
+      <a href="#calculator" style="display:inline-flex; align-items:center; gap:8px; padding:15px 26px; border-radius:14px; background:rgba(255,255,255,0.7); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.9); color:#1E293B; text-decoration:none; font-weight:600; font-size:16px; box-shadow:0 6px 20px rgba(78,123,245,0.08); transition:transform .2s;" style-hover="transform:translateY(-2px);">Сразу к калькулятору</a>
+    </div>
+
+    <div data-reveal="" data-hero-stats="" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; max-width:760px; margin:0 auto;">
+      <div style="background:rgba(255,255,255,0.62); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:16px 14px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:21px; font-weight:800; color:#059669; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">до 19 500 ₽</div>
+        <div style="font-size:12.5px; color:#64748B; margin-top:3px;">в год — за медицину, обучение и спорт</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.62); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:16px 14px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:21px; font-weight:800; color:#059669; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">до 14 300 ₽</div>
+        <div style="font-size:12.5px; color:#64748B; margin-top:3px;">в год — за обучение каждого ребёнка</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.62); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:16px 14px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:21px; font-weight:800; color:#059669; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">до 52 000 ₽</div>
+        <div style="font-size:12.5px; color:#64748B; margin-top:3px;">в год — за ИИС</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.62); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:16px 14px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:21px; font-weight:800; color:#059669; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">до 260 000 ₽</div>
+        <div style="font-size:12.5px; color:#64748B; margin-top:3px;">за квартиру, дом, участок</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.62); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:16px 14px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:21px; font-weight:800; color:#059669; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">до 390 000 ₽</div>
+        <div style="font-size:12.5px; color:#64748B; margin-top:3px;">за проценты по ипотеке</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.62); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:16px 14px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:21px; font-weight:800; color:#3B62D6; letter-spacing:-0.02em;">3 года сразу</div>
+        <div style="font-size:12.5px; color:#64748B; margin-top:3px;">можно вернуть за 2023, 2024, 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS NDFL (collapsible) -->
+<section style="position:relative; z-index:1; padding:0 24px 8px; display:flex; justify-content:center;">
+  <div data-reveal="" style="width:100%; max-width:760px; background:rgba(255,255,255,0.6); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; box-shadow:0 8px 32px rgba(78,123,245,0.08); overflow:hidden;">
+    <button onClick="{{ tog.whatIs }}" aria-expanded="{{ exp.whatIs }}" style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 26px; background:transparent; border:none; cursor:pointer; text-align:left; font-family:inherit;">
+      <span style="display:flex; align-items:center; gap:14px;">
+        <span style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:12px; background:#EEF4FF; font-size:20px;">💡</span>
+        <span style="font-size:17px; font-weight:600; color:#1E293B;">Что такое вычет и НДФЛ?</span>
+      </span>
+      <span style="font-size:13px; color:#4E7BF5; font-weight:600; white-space:nowrap;">{{ whatIsLabel }}</span>
+    </button>
+    <sc-if value="{{ exp.whatIs }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:0 26px 26px; max-width:680px;">
+        <p style="font-size:16px; line-height:1.7; color:#334155; margin:0 0 14px;">Каждый месяц работодатель удерживает из вашей зарплаты <strong>13–22%</strong> и отправляет государству. Это НДФЛ — налог на доходы физических лиц.</p>
+        <p style="font-size:16px; line-height:1.7; color:#334155; margin:0 0 12px;">С 2025 года в России действует пятиступенчатая шкала НДФЛ. Повышенная ставка платится только с суммы превышения порога:</p>
+        <div style="display:grid; gap:6px; margin:0 0 14px;">
+          <div style="display:flex; gap:10px; font-size:14.5px; line-height:1.5; color:#334155;"><span style="font-weight:700; color:#3B62D6; min-width:46px;">13%</span><span>на доходы до 2,4 млн руб. в год</span></div>
+          <div style="display:flex; gap:10px; font-size:14.5px; line-height:1.5; color:#334155;"><span style="font-weight:700; color:#3B62D6; min-width:46px;">15%</span><span>на часть дохода от 2,4 до 5 млн руб.</span></div>
+          <div style="display:flex; gap:10px; font-size:14.5px; line-height:1.5; color:#334155;"><span style="font-weight:700; color:#3B62D6; min-width:46px;">18%</span><span>на часть дохода от 5 до 20 млн руб.</span></div>
+          <div style="display:flex; gap:10px; font-size:14.5px; line-height:1.5; color:#334155;"><span style="font-weight:700; color:#3B62D6; min-width:46px;">20%</span><span>на часть дохода от 20 до 50 млн руб.</span></div>
+          <div style="display:flex; gap:10px; font-size:14.5px; line-height:1.5; color:#334155;"><span style="font-weight:700; color:#3B62D6; min-width:46px;">22%</span><span>на часть дохода свыше 50 млн руб.</span></div>
+        </div>
+        <p style="font-size:13.5px; line-height:1.6; color:#64748B; margin:0 0 16px;"><strong>Исключение:</strong> для дивидендов, вкладов и продажи имущества максимальная ставка остаётся 15% (применяется к доходам свыше 2,4 млн руб.).</p>
+        <p style="font-size:16px; line-height:1.7; color:#334155; margin:0 0 16px;"><strong>Вычет</strong> — это право вернуть часть этого налога обратно, если вы потратили деньги на одобренные государством вещи: лечение, обучение, квартиру, инвестиции.</p>
+        <div style="background:rgba(236,253,245,0.75); border:1px solid rgba(52,211,153,0.35); border-radius:14px; padding:16px 18px; max-width:100%;">
+          <div style="font-size:15px; line-height:1.6; color:#064E3B;">Сумма возврата = ваши расходы × ваша ставка налога.<br>При зарплате <strong>80 000 ₽/мес</strong> и расходах <strong>150 000 ₽</strong> на лечение — вернут <strong>19 500 ₽</strong>.</div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- CHAPTER 1: SOCIAL -->
+<section id="chapter1" data-step="chapter1" data-section-pad="" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="display:flex; gap:18px; margin-bottom:32px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; flex:none;">
+        <span style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#4E7BF5; color:#fff; font-weight:700; font-size:17px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">1</span>
+        <span style="flex:1; width:2px; border-radius:2px; background:linear-gradient(#4E7BF5, transparent); min-height:40px;"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:8px;">Глава 1</div>
+        <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Социальный вычет</h2>
+        <p style="font-size:17px; line-height:1.62; color:#475569; margin:0; max-width:560px;">Лечение, лекарства, обучение и спорт. Всё это можно частично вернуть! И сделать это легко — через Упрощённый способ получения вычета БЕЗ подачи декларации 3-НДФЛ.</p>
+      </div>
+    </div>
+
+    <!-- Limit block -->
+    <div data-reveal="" style="background:rgba(236,253,245,0.75); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(52,211,153,0.35); border-radius:20px; padding:24px 26px; box-shadow:0 8px 32px rgba(16,185,129,0.12); margin-bottom:18px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:14px;">Общий лимит социального вычета</div>
+      <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:16px;">
+        <div style="flex:1; min-width:200px; background:rgba(255,255,255,0.6); border-radius:14px; padding:16px 18px;">
+          <div style="font-size:26px; font-weight:800; color:#064E3B; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">150 000 ₽</div>
+          <div style="font-size:13px; color:#475569; margin-top:2px;">в год на человека — 2024 и позже</div>
+        </div>
+        <div style="flex:1; min-width:200px; background:rgba(255,255,255,0.6); border-radius:14px; padding:16px 18px;">
+          
+          <div style="font-size:26px; font-weight:800; color:#475569; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">120 000 ₽</div><div style="font-size:13px; color:#475569; margin-top:2px;">в год на человека — 2023 год</div>
+        </div>
+      </div>
+      <p style="font-size:15px; line-height:1.6; color:#065F46; margin:0;">Это не значит, что вернут 150 000 ₽. Это значит, что с расходов суммарно до 150 000 ₽ можно получить вычет. Сумма возврата = 150 000 × ставку налога (13–22%). При ставке 13% — возврат <strong>до 19 500 ₽/год</strong>.</p>
+    </div>
+
+    <!-- Spouse advice -->
+    <div data-reveal="" style="background:rgba(238,244,255,0.8); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(78,123,245,0.28); border-radius:20px; padding:24px 26px; box-shadow:0 8px 32px rgba(78,123,245,0.1); margin-bottom:40px;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="font-size:26px;">💑</span>
+        <h3 style="font-size:19px; font-weight:600; margin:0; color:#1A2E6B;">Если у вас не хватает НДФЛ — оформите через супруга</h3>
+      </div>
+      <p style="font-size:15px; line-height:1.62; color:#334155; margin:0 0 12px;">Каждый из супругов имеет свой отдельный лимит 150 000 ₽ в год. Если один из вас не работал, был в декрете или работал как ИП и самозанятый (с дохода не был удержан НДФЛ) — вычет за его расходы может оформить второй партнёр. Для этого неважно, на кого был оформлен договор или с чьей карты была совершена оплата.</p>
+      <div style="background:rgba(255,251,235,0.7); border:1px solid rgba(251,191,36,0.35); border-radius:12px; padding:12px 14px; font-size:14px; line-height:1.55; color:#92400E; margin-bottom:14px;">Вычет не переносится — если не хватило уплаченного НДФЛ за год, остаток сгорает!</div>
+      <ul style="margin:0; padding-left:20px; font-size:15px; line-height:1.7; color:#334155;">
+        <li>Жена в декрете → муж оформляет за её лечение на себя</li>
+        <li>Родители-пенсионеры не платят НДФЛ → дети оформляют за их лечение на себя</li>
+        <li>Суммарные расходы семьи > 150 000 ₽ → перенесите расходы выше лимита на второго супруга</li>
+      </ul>
+    </div>
+
+    <!-- 4 info cards 2x2 -->
+    <div style="display:grid; grid-template-columns:1fr; gap:18px;">
+
+      <!-- Card 1: Medical -->
+      <div data-reveal="" data-stagger="0" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08); transition:transform .22s, box-shadow .22s;" style-hover="transform:translateY(-4px); box-shadow:0 18px 48px rgba(78,123,245,0.14);">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#ECFDF5; font-size:22px; flex:none;">🏥</div>
+          <div>
+            <h4 style="font-size:17px; font-weight:600; margin:0 0 2px; color:#1E293B;">Медицинские услуги</h4>
+            <div style="font-size:13px; color:#64748B;">За себя, супруга, детей до 24 лет, родителей</div>
+          </div>
+        </div>
+
+        <ul style="margin:0 0 16px; padding-left:18px; font-size:14.5px; line-height:1.65; color:#334155;">
+          <li>Приёмы любых врачей (терапевт, узкие специалисты)</li>
+          <li>Анализы, УЗИ, МРТ, КТ, рентген и другая диагностика</li>
+          <li>Стоматология: лечение кариеса, пломбы, удаление, ортодонтия, чистка</li>
+          <li>Хирургические операции, стационар, дневной стационар</li>
+          <li>Реабилитация и физиотерапия</li>
+          <li>Платные роды, наблюдение беременности</li>
+          <li>Лечение в санатории — только медицинские услуги, не путёвка</li>
+          <li>ДМС (добровольное медицинское страхование)</li>
+        </ul>
+
+        <div style="background:rgba(238,244,255,0.7); border:1px solid rgba(78,123,245,0.18); border-radius:12px; padding:14px 16px; margin-bottom:16px;">
+          <ul style="margin:0; padding-left:18px; font-size:14.5px; line-height:1.7; color:#334155;">
+            <li>У клиники или врача должна быть российская лицензия на медицинскую деятельность</li>
+            <li>Запросите справку об оплате медицинских услуг (с 2024 года достаточно только её)</li>
+          </ul>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС (с 2024)</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через банк (с 2024)</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(255,251,235,0.9); color:#B45309; border:1px solid rgba(251,191,36,0.35);">только 3-НДФЛ для 2023</span>
+        </div>
+
+        <button onClick="{{ tog.c1med }}" aria-expanded="{{ exp.c1med }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5;">Пример из практики ▸</button>
+        <sc-if value="{{ exp.c1med }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; background:rgba(248,250,252,0.8); border-left:3px solid #10B981; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.6; color:#475569;">
+            Жена в декрете потратила 90&nbsp;000&nbsp;₽ на лечение зубов. НДФЛ не платила, подать на вычет не могла.<br>
+            Муж оформил вычет на себя. Приложил справку из клиники и свидетельство о браке.<br>
+            <strong style="color:#059669;">Вернули 11&nbsp;700&nbsp;₽.</strong> Деньги пришли мужу на счёт.
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Card 2: Drugs -->
+      <div data-reveal="" data-stagger="1" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08); transition:transform .22s, box-shadow .22s;" style-hover="transform:translateY(-4px); box-shadow:0 18px 48px rgba(78,123,245,0.14);">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#ECFDF5; font-size:22px; flex:none;">💊</div>
+          <div>
+            <h4 style="font-size:17px; font-weight:600; margin:0 0 2px; color:#1E293B;">Лекарства</h4>
+            <div style="font-size:13px; color:#64748B;">За себя, супруга, детей до 24 лет, родителей</div>
+          </div>
+        </div>
+
+        <p style="font-size:14.5px; line-height:1.65; color:#334155; margin:0 0 10px;">За <strong>ЛЮБЫЕ</strong> препараты, назначенные врачом и оплаченные своими деньгами!</p>
+        <p style="font-size:14.5px; line-height:1.65; color:#334155; margin:0 0 16px;">С 2019 года перечень лекарств для вычета больше не применяется. Но препараты должны быть выписаны на рецептурном бланке или их назначение отражено в медицинской документации — например, истории болезни. При этом лекарство может быть и не рецептурным, но бланк всё равно обязателен.</p>
+
+        <div style="background:rgba(238,244,255,0.7); border:1px solid rgba(78,123,245,0.18); border-radius:12px; padding:14px 16px; margin-bottom:14px;">
+          <ul style="margin:0; padding-left:18px; font-size:14.5px; line-height:1.7; color:#334155;">
+            <li>Запросите рецепт по форме 107-1/у (с 2024 принимаются электронные рецепты)</li>
+            <li>Чеки из аптеки или выписка из банка</li>
+          </ul>
+        </div>
+        <div style="background:rgba(255,251,235,0.85); border:1px solid rgba(251,191,36,0.35); border-radius:12px; padding:12px 14px; font-size:13.5px; line-height:1.6; color:#92400E; margin-bottom:14px;">Если вы получаете лекарства бесплатно по льготному рецепту (инвалидность I–II группы, дети до 3 лет и др.) — вычет не применяется, вы ничего не платили. Но если вы отказались от льготы в пользу денежной компенсации и покупаете препараты сами — вычет оформить можно.</div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(255,251,235,0.9); color:#B45309; border:1px solid rgba(251,191,36,0.35);">только 3-НДФЛ</span>
+        </div>
+
+        <button onClick="{{ tog.c1drugs }}" aria-expanded="{{ exp.c1drugs }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5;">Пример из практики ▸</button>
+        <sc-if value="{{ exp.c1drugs }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; background:rgba(248,250,252,0.8); border-left:3px solid #10B981; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.6; color:#475569;">В 2025 году Ольга потратила на лекарства для себя, мужа и детей 25 000 ₽. Рецепты и чеки есть только на 18 000 ₽. Зарплата — 40 000 ₽/мес. За 2025 год она подаст декларацию: годовой доход уменьшится на 18 000 ₽, излишне удержанный налог <strong style="color:#059669;">2 340 ₽</strong> вернут на счёт.</div>
+        </sc-if>
+      </div>
+
+      <!-- Card 3: Education -->
+      <div data-reveal="" data-stagger="2" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08); transition:transform .22s, box-shadow .22s;" style-hover="transform:translateY(-4px); box-shadow:0 18px 48px rgba(78,123,245,0.14);">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#ECFDF5; font-size:22px; flex:none;">🎓</div>
+          <div>
+            <h4 style="font-size:17px; font-weight:600; margin:0 0 2px; color:#1E293B;">Обучение / курсы</h4>
+            <div style="font-size:13px; color:#64748B;">За себя (любая форма: очно, заочно, дистанционно), за супруга (с 2024, только очная форма), за братьев/сестёр до 24 лет (только очная форма)</div>
+          </div>
+        </div>
+
+        <ul style="margin:0 0 16px; padding-left:18px; font-size:14.5px; line-height:1.65; color:#334155;">
+          <li>ВУЗ, колледж, техникум</li>
+          <li>Автошкола</li>
+          <li>Языковые курсы</li>
+          <li>Курсы повышения квалификации, профессиональной переподготовки</li>
+          <li>Онлайн-курсы (Skillbox, Нетология и др.) — если есть образовательная лицензия</li>
+        </ul>
+
+        <div style="background:rgba(238,244,255,0.7); border:1px solid rgba(78,123,245,0.18); border-radius:12px; padding:14px 16px; margin-bottom:16px;">
+          <ul style="margin:0; padding-left:18px; font-size:14.5px; line-height:1.7; color:#334155;">
+            <li>У учебного заведения должна быть лицензия на образовательную деятельность (проверить в реестре Рособрнадзора)</li>
+            <li>Запросите справку об оплате образовательных услуг (с 2024 года достаточно только её)</li>
+          </ul>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС (с 2024)</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через банк (с 2024)</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(255,251,235,0.9); color:#B45309; border:1px solid rgba(251,191,36,0.35);">только 3-НДФЛ для 2023</span>
+        </div>
+
+        <button onClick="{{ tog.c1edu }}" aria-expanded="{{ exp.c1edu }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5;">Пример из практики ▸</button>
+        <sc-if value="{{ exp.c1edu }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; background:rgba(255,241,242,0.8); border-left:3px solid #EF4444; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.6; color:#7F1D1D;">
+            Клиент заплатил 300&nbsp;000&nbsp;₽ сразу за три года обучения — одним чеком в одном году.<br>
+            Лимит вычета за год — 150&nbsp;000&nbsp;₽. Остаток на следующий год не переносится.<br>
+            Вернул <strong>19&nbsp;500&nbsp;₽</strong> вместо 39&nbsp;000&nbsp;₽, если бы разбил оплату на два года.<br>
+            <strong>Вывод: платите за обучение по годам, не вперёд. Лишнее сгорает.</strong>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Card 4: Sport -->
+      <div data-reveal="" data-stagger="3" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08); transition:transform .22s, box-shadow .22s;" style-hover="transform:translateY(-4px); box-shadow:0 18px 48px rgba(78,123,245,0.14);">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#ECFDF5; font-size:22px; flex:none;">🏋️</div>
+          <div>
+            <h4 style="font-size:17px; font-weight:600; margin:0 0 2px; color:#1E293B;">Фитнес и спорт</h4>
+            <div style="font-size:13px; color:#64748B;">За себя, детей до 18 лет</div>
+          </div>
+        </div>
+        <ul style="margin:0 0 16px; padding-left:18px; font-size:14.5px; line-height:1.65; color:#334155;">
+          <li>Фитнес-клуб, тренажёрный зал, бассейн</li>
+          <li>Йога, пилатес, танцевальные студии</li>
+          <li>Детские спортивные секции</li>
+          <li>Персональный тренер (ИП в реестре)</li>
+        </ul>
+        <div style="background:rgba(248,250,252,0.85); border:1px solid rgba(226,232,240,0.9); border-radius:12px; padding:12px 14px; font-size:13.5px; line-height:1.55; color:#475569; margin-bottom:14px;">Организация должна быть в реестре Минспорта за тот год, когда платили. Перечень обновляется ежегодно — проверка на minsport.gov.ru.</div>
+        <div style="display:flex; flex-wrap:wrap; gap:7px;">
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС (с 2024)</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через банк (с 2024)</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(255,251,235,0.9); color:#B45309; border:1px solid rgba(251,191,36,0.35);">только 3-НДФЛ для 2023</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 2: EXPENSIVE -->
+<section id="chapter2" data-step="chapter2" data-section-pad="" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="display:flex; gap:18px; margin-bottom:32px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; flex:none;">
+        <span style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#4E7BF5; color:#fff; font-weight:700; font-size:17px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">2</span>
+        <span style="flex:1; width:2px; border-radius:2px; background:linear-gradient(#4E7BF5, transparent); min-height:40px;"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:8px;">Глава 2 · без лимита</div>
+        <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Дорогостоящее лечение</h2>
+        <p style="font-size:17px; line-height:1.62; color:#475569; margin:0; max-width:560px;">Особая категория — вычет со всей суммы без ограничений.<br>За себя, супруга, детей, родителей.</p>
+      </div>
+    </div>
+
+    <div data-reveal="" style="background:rgba(236,253,245,0.78); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(52,211,153,0.4); border-radius:20px; padding:26px 28px; box-shadow:0 8px 32px rgba(16,185,129,0.14); margin-bottom:18px;">
+      <p style="font-size:18px; line-height:1.6; color:#064E3B; margin:0; font-weight:500;">В отличие от обычного лечения — здесь <strong>нет лимита 150 000 ₽</strong>.<br>Заплатили 500 000 ₽ за операцию → вернут <strong>65 000 ₽</strong> (13%).<br>Заплатили 1 000 000 ₽ → вернут <strong>130 000 ₽</strong>.</p>
+    </div>
+
+    <div data-reveal="" style="background:rgba(255,251,235,0.85); backdrop-filter:blur(24px); border:1px solid rgba(251,191,36,0.4); border-radius:20px; padding:22px 24px; margin-bottom:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span style="font-size:22px;">🔑</span><h3 style="font-size:18px; font-weight:600; margin:0; color:#92400E;">Как отличить — по коду в справке</h3></div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px;">
+        <div style="flex:1; min-width:220px; background:rgba(255,255,255,0.65); border-radius:12px; padding:14px 16px;"><div style="font-weight:700; color:#92400E; font-size:15px;">Код 1 — обычное лечение</div><div style="font-size:13.5px; color:#78350F; margin-top:3px;">лимит 150 000 ₽</div></div>
+        <div style="flex:1; min-width:220px; background:rgba(255,255,255,0.65); border-radius:12px; padding:14px 16px;"><div style="font-weight:700; color:#059669; font-size:15px;">Код 2 — дорогостоящее</div><div style="font-size:13.5px; color:#065F46; margin-top:3px;">без лимита</div></div>
+      </div>
+      <p style="font-size:14px; color:#92400E; margin:14px 0 0;">Попросите клинику заранее уточнить код — это важно!</p>
+    </div>
+
+    <div data-reveal="" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08); margin-bottom:18px;">
+      <div style="font-size:16px; font-weight:600; color:#1E293B; margin-bottom:14px;">Что входит в дорогостоящее лечение</div>
+      <ul style="margin:0 0 14px; padding-left:18px; font-size:15px; line-height:1.7; color:#334155;">
+        <li>Онкология: операции, химио- и лучевая терапия</li>
+        <li>ЭКО (лечение бесплодия)</li>
+        <li>Трансплантация органов и тканей</li>
+        <li>Протезирование и эндопротезирование суставов</li>
+        <li>Имплантация зубов с костной пластикой</li>
+        <li>Высокотехнологичная медпомощь (ВМП)</li>
+        <li>Лечение сахарного диабета с осложнениями</li>
+        <li>и т.д. (смотрите перечень)</li>
+      </ul>
+
+      <div style="background:rgba(238,244,255,0.7); border:1px solid rgba(78,123,245,0.18); border-radius:12px; padding:14px 16px; margin-bottom:16px;">
+        <div style="font-size:13.5px; color:#334155;">Перечень — Постановление Правительства №458. Условие: российская лицензия у клиники.<br>Запросите справку об оплате медицинских услуг (в поле «Код услуги» стоит цифра 2).</div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;">
+        <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС (с 2024)</span>
+        <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(255,251,235,0.9); color:#B45309; border:1px solid rgba(251,191,36,0.35);">только 3-НДФЛ для 2023</span>
+      </div>
+
+      <button onClick="{{ tog.c2list }}" aria-expanded="{{ exp.c2list }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5;">Пример из практики ▸</button>
+      <sc-if value="{{ exp.c2list }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px; background:rgba(248,250,252,0.8); border-left:3px solid #10B981; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.6; color:#475569;">
+          <p style="font-size:14px; line-height:1.62; color:#475569; margin:0 0 12px;">Клиентка поставила два импланта — 185&nbsp;000&nbsp;₽. Обычный лимит соцвычета 150&nbsp;000&nbsp;₽. Но имплантация с костной пластикой относится к дорогостоящему лечению — в справке стоял<br>код 2.</p>
+          <div style="background:rgba(236,253,245,0.8); border:1px solid rgba(52,211,153,0.35); border-radius:12px; padding:14px 16px; margin-bottom:10px;"><span style="font-size:13px; color:#059669; font-weight:600;">ВЕРНУЛИ</span><div style="font-size:20px; font-weight:800; color:#064E3B; margin-top:2px;">185&nbsp;000 × 13% = 24&nbsp;050&nbsp;₽</div><div style="font-size:13px; color:#065F46; margin-top:2px;">вместо 19&nbsp;500&nbsp;₽ при обычном лимите</div></div>
+          <div style="background:rgba(255,251,235,0.8); border:1px solid rgba(251,191,36,0.35); border-radius:12px; padding:12px 14px; font-size:13.5px; line-height:1.55; color:#92400E;">Обычное протезирование без имплантов идёт по коду 1 — туда лимит 150&nbsp;000&nbsp;₽ применяется.</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 3: CHILD EDUCATION -->
+<section id="chapter3" data-step="chapter3" data-section-pad="" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="display:flex; gap:18px; margin-bottom:32px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; flex:none;">
+        <span style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#4E7BF5; color:#fff; font-weight:700; font-size:17px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">3</span>
+        <span style="flex:1; width:2px; border-radius:2px; background:linear-gradient(#4E7BF5, transparent); min-height:40px;"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:8px;">Глава 3</div>
+        <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Обучение ребёнка</h2>
+        <p style="font-size:17px; line-height:1.62; color:#475569; margin:0; max-width:560px;">Отдельный вычет с отдельным лимитом</p>
+      </div>
+    </div>
+
+    <div data-reveal="" style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:18px;">
+      <div style="flex:1; min-width:220px; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.85); border-radius:18px; padding:20px 22px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:26px; font-weight:800; color:#3B62D6; letter-spacing:-0.02em;">110 000 ₽</div>
+        <div style="font-size:13.5px; color:#475569; margin-top:3px;">на каждого ребёнка (с 2024) — у обоих родителей суммарно</div>
+      </div>
+      <div style="flex:1; min-width:220px; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.85); border-radius:18px; padding:20px 22px; box-shadow:0 8px 28px rgba(78,123,245,0.07);">
+        <div style="font-size:26px; font-weight:800; color:#64748B; letter-spacing:-0.02em;">50 000 ₽</div>
+        <div style="font-size:13.5px; color:#475569; margin-top:3px;">на каждого ребёнка (за 2023) — у обоих родителей суммарно</div>
+      </div>
+    </div>
+<div data-reveal="" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08); margin-bottom:18px;">
+      <ul style="margin:0 0 16px; padding-left:18px; font-size:15px; line-height:1.7; color:#334155;">
+        <li>Платный детский сад (образовательные услуги — не питание)</li>
+        <li>Частная школа · ВУЗ (только дневное отделение)</li>
+        <li>Кружки, студии, секции, языковые школы для детей</li>
+      </ul>
+
+      <div style="background:rgba(238,244,255,0.7); border:1px solid rgba(78,123,245,0.18); border-radius:12px; padding:14px 16px; margin-bottom:16px;">
+        <div style="font-size:14px; line-height:1.6; color:#334155;">Только очная форма обучения, ребёнок до 24 лет. Должна быть лицензия у учебного заведения (в т.ч. у кружков и секций). Может оформить любой из родителей.<br>Запросите справку об оплате образовательных услуг.</div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:7px; margin:14px 0;">
+        <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС (с 2024)</span>
+        <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(255,251,235,0.9); color:#B45309; border:1px solid rgba(251,191,36,0.35);">только 3-НДФЛ для 2023</span>
+      </div>
+
+      <button onClick="{{ tog.c3list }}" aria-expanded="{{ exp.c3list }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5; margin-top:2px;">Пример из практики ▸</button>
+      <sc-if value="{{ exp.c3list }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px; background:rgba(248,250,252,0.8); border-left:3px solid #10B981; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.6; color:#475569;">Семья с тремя детьми может заявить вычет за обучение детей до <strong style="color:#059669;">330&nbsp;000&nbsp;₽</strong> суммарно — по 110&nbsp;000&nbsp;₽ на каждого ребёнка.</div>
+      </sc-if>
+
+      <button onClick="{{ tog.c3tip }}" aria-expanded="{{ exp.c3tip }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5; margin-top:12px;">Совет ▸</button>
+      <sc-if value="{{ exp.c3tip }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px; background:rgba(238,244,255,0.8); border-left:3px solid #4E7BF5; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.7; color:#334155;">Крупные и юридически подкованные онлайн-платформы прекрасно знают об условии получения вычета только за ОЧНУЮ форму обучения. Они специально составляют свои программы и лицензии так, чтобы в справках для налоговой указывать именно очную форму.<br><br>Перед тем как оплачивать дорогие онлайн-курсы или годовое обучение на IT-платформе для ребёнка, уточните у поддержки: будет ли прописано в справке для налоговой очная форма обучения.</div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+<section id="chapter4" data-step="chapter4" data-section-pad="" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="display:flex; gap:18px; margin-bottom:32px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; flex:none;">
+        <span style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#4E7BF5; color:#fff; font-weight:700; font-size:17px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">4</span>
+        <span style="flex:1; width:2px; border-radius:2px; background:linear-gradient(#4E7BF5, transparent); min-height:40px;"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:8px;">Глава 4</div>
+        <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Инвестиционный вычет — ИИС</h2>
+        <p style="font-size:17px; line-height:1.62; color:#475569; margin:0; max-width:560px;">Сколько денег вы внесли на ИИС за календарный год — за тот же год вы и возвращаете НДФЛ (лимит до 400 000 ₽/год). Максимальный возврат при ставке 13% — 52 000 ₽/год.</p>
+      </div>
+    </div>
+
+    <div data-reveal="" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px; margin-bottom:18px;">
+      <div style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08);">
+        <h4 style="font-size:17px; font-weight:700; margin:0 0 12px; color:#1E293B;">ИИС типа А <span style="font-weight:400; font-size:13px; color:#94A3B8;">(открытые до 31.12.2023)</span></h4>
+        <ul style="margin:0; padding-left:18px; font-size:14.5px; line-height:1.7; color:#334155;">
+          <li>Вычет на взносы: до <strong>400 000 ₽/год</strong></li>
+          <li>Минимальный срок: 3 года</li>
+          <li>Можно продолжать по старым правилам</li>
+          <li>Только один счёт</li>
+        </ul>
+      </div>
+      <div style="background:rgba(236,253,245,0.7); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(52,211,153,0.35); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(16,185,129,0.1);">
+        <h4 style="font-size:17px; font-weight:700; margin:0 0 12px; color:#064E3B;">ИИС-3 <span style="font-weight:400; font-size:13px; color:#10B981;">(новый, с 2024)</span></h4>
+        <ul style="margin:0 0 12px; padding-left:18px; font-size:14.5px; line-height:1.7; color:#065F46;">
+          <li>Вычет на взносы: до <strong>400 000 ₽/год</strong></li>
+          <li>+ освобождение от налога на прибыль при закрытии</li>
+          <li>Оба вычета доступны одновременно</li>
+          <li>Можно открыть до трёх счетов</li>
+        </ul>
+        <div style="background:rgba(255,255,255,0.6); border-radius:12px; padding:12px 14px; font-size:13.5px; line-height:1.55; color:#065F46;">Мин. срок: открыт в 2024–2026 → <strong>5 лет</strong>. С 2027 срок растёт, к 2031 достигнет 10 лет.</div>
+      </div>
+    </div>
+
+    <div data-reveal="" style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px;">
+      <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС</span>
+      <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК брокера</span>
+    </div>
+
+    <div data-reveal="" style="background:rgba(255,241,242,0.82); backdrop-filter:blur(24px); border:1px solid rgba(251,113,133,0.4); border-radius:20px; padding:22px 24px; margin-bottom:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><span style="font-size:22px;">⚠️</span><h3 style="font-size:17px; font-weight:600; margin:0; color:#7F1D1D;">Досрочное закрытие ИИС</h3></div>
+      <p style="font-size:15px; line-height:1.6; color:#7F1D1D; margin:0 0 10px;">Все полученные вычеты придётся вернуть плюс пени за каждый день.</p>
+      <p style="font-size:14px; line-height:1.55; color:#9F1239; margin:0;">Исключение: вывод средств на дорогостоящее лечение — счёт при этом не закрывается и все льготы сохраняются.</p>
+    </div>
+
+    <div data-reveal="" style="display:flex; flex-wrap:wrap; gap:14px; align-items:stretch;">
+      <div style="flex:1; min-width:160px; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:18px 20px; box-shadow:0 8px 28px rgba(78,123,245,0.07);"><div style="font-size:12px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">Важно</div><div style="font-size:15px; font-weight:600; color:#1E293B; margin-top:6px; line-height:1.4;">Вычет можно вернуть только за свой ИИС</div></div>
+      <div style="flex:1; min-width:160px; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.85); border-radius:16px; padding:18px 20px; box-shadow:0 8px 28px rgba(78,123,245,0.07);"><div style="font-size:12px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">Лимит</div><div style="font-size:22px; font-weight:800; color:#3B62D6; margin-top:4px;">400 000 ₽/год</div></div>
+      <div style="flex:1; min-width:160px; background:rgba(236,253,245,0.75); backdrop-filter:blur(24px); border:1px solid rgba(52,211,153,0.35); border-radius:16px; padding:18px 20px; box-shadow:0 8px 28px rgba(16,185,129,0.1);"><div style="font-size:12px; color:#10B981; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">Возврат при 13%</div><div style="font-size:22px; font-weight:800; color:#064E3B; margin-top:4px;">до 52 000 ₽/год</div></div>
+      <div style="flex:1; min-width:160px; background:rgba(255,251,235,0.8); backdrop-filter:blur(24px); border:1px solid rgba(251,191,36,0.35); border-radius:16px; padding:18px 20px;"><div style="font-size:12px; color:#B45309; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">Не переносится</div><div style="font-size:14px; font-weight:500; color:#92400E; margin-top:4px; line-height:1.45;">Если не хватило НДФЛ, остаток сгорает.</div></div>
+    </div>
+    <div data-reveal="" style="margin-top:4px;"><a href="https://www.sberbank.ru/ru/person/investments/broker_service/faq/10882" target="_blank" rel="noopener" style="font-size:14px; color:#4E7BF5; font-weight:600; text-decoration:none;">Подробнее об ИИС на сайте Сбера ↗</a></div>
+  </div>
+</section>
+
+<!-- CHAPTER 5: PROPERTY -->
+<section id="chapter5" data-step="chapter5" data-section-pad="" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="display:flex; gap:18px; margin-bottom:32px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; flex:none;">
+        <span style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#4E7BF5; color:#fff; font-weight:700; font-size:17px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">5</span>
+        <span style="flex:1; width:2px; border-radius:2px; background:linear-gradient(#4E7BF5, transparent); min-height:40px;"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:8px;">Глава 5</div>
+        <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Имущественный вычет</h2>
+        <p style="font-size:17px; line-height:1.62; color:#475569; margin:0; max-width:560px;">Купили жильё? Это самый большой вычет, который можно получить ОДИН раз в жизни, но в отличии от других категорий, он переносится на следующие годы, пока не достигнет максимальных лимитов.</p>
+      </div>
+    </div>
+
+    <div data-reveal="" style="display:grid; grid-template-columns:1fr; gap:18px; margin-bottom:18px;">
+      <div style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><span style="font-size:22px;">🏠</span><h4 style="font-size:17px; font-weight:700; margin:0; color:#1E293B;">Покупка жилья</h4></div>
+        <div style="font-size:24px; font-weight:800; color:#3B62D6; margin-bottom:4px;">2 000 000 ₽</div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:14px;">лимит на человека, можно на несколько объектов до исчерпания лимита</div>
+        <ul style="margin:0 0 14px; padding-left:18px; font-size:14px; line-height:1.65; color:#334155;">
+          <li>Квартира, комната, доля в жилье</li>
+          <li>Жилой дом или его часть</li>
+          <li>Земельный участок под жилым домом или под строительство</li>
+        </ul>
+        <div style="background:rgba(236,253,245,0.8); border:1px solid rgba(52,211,153,0.3); border-radius:12px; padding:12px 14px; font-size:13.5px; line-height:1.55; color:#065F46;">Если квартира куплена в браке — каждый супруг может заявить до 2 000 000 ₽. Т.е. с квартиры стоимостью выше 4 000 000 ₽ семья вернёт 520 000 ₽ суммарно.</div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ДомКлик от Сбер</span>
+        </div>
+
+        <button onClick="{{ tog.c5buy }}" aria-expanded="{{ exp.c5buy }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5;">Пример из практики ▸</button>
+        <sc-if value="{{ exp.c5buy }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; background:rgba(248,250,252,0.8); border-left:3px solid #10B981; border-radius:12px; padding:14px 16px; font-size:14px; line-height:1.7; color:#475569;">
+            Семья купила в 2021 году квартиру за 9 млн руб. Каждый супруг имеет лимит 2 000 000 ₽ и может вернуть по 260 000 ₽ (всего <strong style="color:#059669;">520 000 ₽</strong> на двоих).<br><br>
+            В 2026 году муж и жена заявляют упрощённо на вычет по НДФЛ за 2024 и 2025 года.<br><br>
+            Жена с доходом 1,3 млн руб. за 2024 год вернула 169 000 ₽ налога, а за 2025 год (доход также 1,3 млн руб.) оставшиеся 91 000 ₽.<br>
+            Муж с доходом 1,5 млн руб. за 2024 год вернул 195 000 ₽ налога, а за 2025 год (доход 1,5 млн руб.) добирает оставшиеся 65 000 ₽.<br><br>
+            В итоге оба супруга полностью закрывают лимиты по вычетам за покупку квартиры и суммарно получают на карту все <strong style="color:#059669;">520 000 ₽</strong> разом.
+          </div>
+        </sc-if>
+      </div>
+      <div style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:20px; padding:24px; box-shadow:0 8px 32px rgba(78,123,245,0.08);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><span style="font-size:22px;">🏦</span><h4 style="font-size:17px; font-weight:700; margin:0; color:#1E293B;">Проценты по ипотеке</h4></div>
+        <div style="font-size:24px; font-weight:800; color:#3B62D6; margin-bottom:4px;">3 000 000 ₽</div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:14px;">лимит на человека, один объект, пока платится ипотека</div>
+        <div style="font-size:13.5px; line-height:1.55; color:#475569; margin-bottom:14px;">Когда можно заявить: в любой год после подписания акта приёма-передачи жилья.
+<br><br>Часто думают, что вычет по процентам можно вернуть только за «свежие» периоды. Это не так! Вычет можно заявить в любой год после того, как вы получили на руки акт приёма-передачи (для новостроек) или выписку из ЕГРН (для вторички).
+<br><br>Вы имеете право заявить <strong>ВСЕ</strong> проценты, которые уплатили банку с самого первого дня ипотеки, даже если платили её несколько лет до получения документов на квартиру или долго не подавали на вычет.</div>
+
+        <div style="background:rgba(236,253,245,0.8); border:1px solid rgba(52,211,153,0.3); border-radius:12px; padding:14px 16px; font-size:13.5px; line-height:1.6; color:#065F46; margin-bottom:14px;">Если суммарные проценты по ипотеке будут меньше 6 000 000 ₽ — нет смысла обоим заявлять проценты по <strong>ОДНОЙ</strong> квартире. Лучше: один супруг использует свой лимит по процентам здесь, второй сохраняет свой лимит на другой объект в будущем.</div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ФНС</span>
+          <span style="font-size:12px; font-weight:500; padding:5px 11px; border-radius:10px; background:rgba(236,253,245,0.9); color:#059669; border:1px solid rgba(52,211,153,0.3);">упрощённо через ЛК ДомКлик от Сбер</span>
+        </div>
+
+        <button onClick="{{ tog.c5list }}" aria-expanded="{{ exp.c5list }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:#4E7BF5;">Пример из практики ▸</button>
+        <sc-if value="{{ exp.c5list }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; border-radius:12px; overflow:hidden;">
+            <p style="font-size:14px; line-height:1.62; color:#475569; margin:0;">Вы купили квартиру в ипотеку в 2021 году, а на вычет впервые решили заявить сейчас, в 2026 году, подав упрощённо на вычет за 2025 год. Запросите в банке единую справку за все годы по процентам по ипотеке.<br><br>Например, в справке за период 2021–2025 годы указано 900&nbsp;000&nbsp;₽ уплаченных процентов. Это означает, что можно будет вернуть НДФЛ в размере <strong style="color:#059669;">117&nbsp;000&nbsp;₽</strong> (при ставке НДФЛ 13%). В такой ситуации в поле калькулятора за 2025 год вводите всю сумму процентов — 900&nbsp;000&nbsp;₽, которую уже уплатили банку за 2021–2025.</p>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+<div data-reveal="" style="background:rgba(238,244,255,0.8); backdrop-filter:blur(24px); border:1px solid rgba(78,123,245,0.28); border-radius:20px; padding:22px 24px; box-shadow:0 8px 32px rgba(78,123,245,0.1); margin-bottom:18px;">
+
+<!-- CALCULATOR -->
+<section id="calculator" data-step="calculator" data-section-pad="" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:640px;">
+    <div data-reveal="" style="display:flex; gap:18px; margin-bottom:32px;">
+      <div style="display:flex; flex-direction:column; align-items:center; flex:none;">
+        <span style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#4E7BF5,#10B981); color:#fff; font-weight:700; font-size:18px; box-shadow:0 4px 12px rgba(78,123,245,0.35);">🧮</span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:8px;">Шаг 6 · считаем</div>
+        <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Калькулятор возврата НДФЛ</h2>
+        <p style="font-size:17px; line-height:1.62; color:#475569; margin:0;">Укажите доход и расходы — калькулятор подберёт правильный порядок за вас.</p>
+      </div>
+    </div>
+
+    <div data-reveal="" data-calc-wrap="" style="background:rgba(255,255,255,0.7); backdrop-filter:blur(28px) saturate(170%); border:1px solid rgba(255,255,255,0.9); border-radius:24px; padding:26px; box-shadow:0 16px 48px rgba(78,123,245,0.12);">
+
+      <!-- Year selector -->
+      <div style="font-size:13px; color:#64748B; margin-bottom:8px;">За какой год считаем?</div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:24px;">
+        <button onClick="{{ setY23 }}" style="padding:12px 0; border-radius:12px; font-family:inherit; font-weight:600; font-size:15px; cursor:pointer; transition:all .2s; border:1px solid {{ y23border }}; background:{{ y23bg }}; color:{{ y23color }};">2023</button>
+        <button onClick="{{ setY24 }}" style="padding:12px 0; border-radius:12px; font-family:inherit; font-weight:600; font-size:15px; cursor:pointer; transition:all .2s; border:1px solid {{ y24border }}; background:{{ y24bg }}; color:{{ y24color }};">2024</button>
+        <button onClick="{{ setY25 }}" style="padding:12px 0; border-radius:12px; font-family:inherit; font-weight:600; font-size:15px; cursor:pointer; transition:all .2s; border:1px solid {{ y25border }}; background:{{ y25bg }}; color:{{ y25color }};">2025</button>
+        <button onClick="{{ setY26 }}" style="padding:12px 0; border-radius:12px; font-family:inherit; font-weight:600; font-size:15px; cursor:pointer; transition:all .2s; border:1px solid {{ y26border }}; background:{{ y26bg }}; color:{{ y26color }};">2026</button>
+      </div>
+
+      <!-- Income mode toggle -->
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;">
+        <div style="font-size:13px; font-weight:600; color:#475569;">Как удобнее ввести доход?</div>
+        <div style="display:inline-flex; background:rgba(238,244,255,0.8); border-radius:11px; padding:3px;">
+          <button onClick="{{ setMonth }}" style="padding:7px 14px; border-radius:9px; border:none; font-family:inherit; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; background:{{ monthBg }}; color:{{ monthColor }}; box-shadow:{{ monthShadow }};">За месяц</button>
+          <button onClick="{{ setYearMode }}" style="padding:7px 14px; border-radius:9px; border:none; font-family:inherit; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; background:{{ yearBg }}; color:{{ yearColor }}; box-shadow:{{ yearShadow }};">За год</button>
+        </div>
+      </div>
+      <label style="display:block; font-size:13px; color:#64748B; margin-bottom:8px;">{{ incomeLabel }}</label>
+      <div style="position:relative; margin-bottom:8px;">
+        <input inputmode="numeric" value="{{ incomeVal }}" onInput="{{ onIncome }}" placeholder="0" aria-label="Доход" style="width:100%; padding:15px 44px 15px 16px; border-radius:13px; border:1.5px solid #E2E8F0; background:#fff; font-size:19px; font-weight:600; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);">
+        <span style="position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:18px; color:#94A3B8; font-weight:600;">₽</span>
+      </div>
+      <div style="font-size:12px; color:#94A3B8; line-height:1.55; margin-bottom:6px;">Как посчитать доход с НДФЛ: сумму «на руки» поделите на 0,87.<br>Например, 50&nbsp;000&nbsp;₽ на руки / 0,87 = 57&nbsp;471&nbsp;₽.<br><br>Также сумму дохода за год можно взять из справки 2-НДФЛ в разделе «Сведения о доходах» — <a href="https://lkfl2.nalog.ru/lkfl/" target="_blank" rel="noopener" style="color:#4E7BF5; text-decoration:none;">Личный кабинет налогоплательщика ↗</a></div>
+      <sc-if value="{{ hasIncomeInput }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:13px; font-weight:600; color:#3B62D6; margin-bottom:18px;">{{ annualHint }}</div>
+      </sc-if>
+
+      <!-- Rate -->
+      <sc-if value="{{ isOldScale }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:24px;">
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate13bg }}; color:{{ rate13color }}; font-weight:{{ rate13weight }}; transition:background .2s, color .2s;">13% — до 5 млн ₽</span>
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate15bg }}; color:{{ rate15color }}; font-weight:{{ rate15weight }}; transition:background .2s, color .2s;">15% — свыше 5 млн ₽</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isNewScale }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:24px;">
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate13bg }}; color:{{ rate13color }}; font-weight:{{ rate13weight }}; transition:background .2s, color .2s;">13% — до 2,4 млн ₽</span>
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate15bg }}; color:{{ rate15color }}; font-weight:{{ rate15weight }}; transition:background .2s, color .2s;">15% — 2,4–5 млн ₽</span>
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate18bg }}; color:{{ rate18color }}; font-weight:{{ rate18weight }}; transition:background .2s, color .2s;">18% — 5–20 млн ₽</span>
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate20bg }}; color:{{ rate20color }}; font-weight:{{ rate20weight }}; transition:background .2s, color .2s;">20% — 20–50 млн ₽</span>
+          <span style="font-size:12px; padding:6px 11px; border-radius:9px; background:{{ rate22bg }}; color:{{ rate22color }}; font-weight:{{ rate22weight }}; transition:background .2s, color .2s;">22% — свыше 50 млн ₽</span>
+        </div>
+      </sc-if>
+
+      <!-- Section 1: Social -->
+      <div style="border-top:1px solid #EEF2F7; padding-top:20px; margin-bottom:6px;">
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#059669; margin-bottom:4px;">① Социальные расходы</div>
+        <div style="font-size:12px; color:#94A3B8; margin-bottom:14px;">общий лимит {{ socLimFmt }} ₽ · вернуть можно через себя или супруга</div>
+        <div style="display:grid; gap:12px;">
+          <div><label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Медицинские услуги</label><div style="position:relative;"><input inputmode="numeric" value="{{ medVal }}" onInput="{{ onMed }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div></div>
+          <div><label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Лекарства</label><div style="position:relative;"><input inputmode="numeric" value="{{ drugsVal }}" onInput="{{ onDrugs }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div></div>
+          <div><label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Обучение / курсы (за себя)</label><div style="position:relative;"><input inputmode="numeric" value="{{ eduVal }}" onInput="{{ onEdu }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div></div>
+          <div><label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Фитнес и спорт</label><div style="position:relative;"><input inputmode="numeric" value="{{ sportVal }}" onInput="{{ onSport }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Expensive -->
+      <div style="border-top:1px solid #EEF2F7; padding-top:20px; margin-top:20px; margin-bottom:6px;">
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#059669; margin-bottom:4px;">② Дорогостоящее лечение</div>
+        <div style="font-size:12px; color:#94A3B8; margin-bottom:14px;">не входит в лимит 150 000 ₽</div>
+        <div style="position:relative;"><input inputmode="numeric" value="{{ expVal }}" onInput="{{ onExp }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div>
+      </div>
+
+      <!-- Section 3: Children -->
+      <div style="border-top:1px solid #EEF2F7; padding-top:20px; margin-top:20px; margin-bottom:6px;">
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#059669; margin-bottom:4px;">③ Обучение ребёнка</div>
+        <div style="font-size:12px; color:#94A3B8; margin-bottom:14px;">лимит {{ cLimFmt }} · вернуть можно через себя или супруга</div>
+        <div style="display:grid; gap:10px;">
+          <sc-for list="{{ childList }}" as="ch" hint-placeholder-count="1">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <label style="font-size:13px; color:#475569; white-space:nowrap; min-width:84px;">Ребёнок {{ ch.idx }}</label>
+              <div style="position:relative; flex:1;"><input inputmode="numeric" value="{{ ch.val }}" onInput="{{ ch.onInput }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div>
+              <sc-if value="{{ ch.canRemove }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ ch.onRemove }}" aria-label="Удалить ребёнка" style="flex:none; width:32px; height:32px; border-radius:9px; border:1px solid #E2E8F0; background:#fff; color:#94A3B8; cursor:pointer; font-size:16px; line-height:1; transition:all .2s;" style-hover="border-color:#FB7185; color:#EF4444;">×</button>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ addChild }}" style="margin-top:12px; background:transparent; border:1px dashed #C7D2FE; border-radius:11px; padding:10px 16px; color:#4E7BF5; font-family:inherit; font-weight:600; font-size:13.5px; cursor:pointer; transition:all .2s; width:100%;" style-hover="background:rgba(238,244,255,0.6);">+ Добавить ребёнка</button>
+      </div>
+
+      <!-- Section 4: IIS -->
+      <div style="border-top:1px solid #EEF2F7; padding-top:20px; margin-top:20px; margin-bottom:6px;">
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#059669; margin-bottom:4px;">④ Инвестиции — ИИС</div>
+        <div style="font-size:12px; color:#94A3B8; margin-bottom:14px;">лимит 400 000 ₽ — только свои взносы</div>
+        <label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Взносы на ИИС за год</label>
+        <div style="position:relative;"><input inputmode="numeric" value="{{ iisVal }}" onInput="{{ onIis }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div>
+      </div>
+
+      <!-- Section 5: Property -->
+      <div style="border-top:1px solid #EEF2F7; padding-top:20px; margin-top:20px; margin-bottom:22px;">
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#059669; margin-bottom:14px;">⑤ Недвижимость</div>
+        <div style="display:grid; gap:12px;">
+          <div><label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Покупка жилья <span style="color:#94A3B8;">(лимит 2 000 000 ₽)</span></label><div style="position:relative;"><input inputmode="numeric" value="{{ propVal }}" onInput="{{ onProp }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div></div>
+          <div><label style="display:block; font-size:13px; color:#475569; margin-bottom:5px;">Проценты по ипотеке <span style="color:#94A3B8;">(лимит 3 000 000 ₽)</span></label><div style="position:relative;"><input inputmode="numeric" value="{{ mortVal }}" onInput="{{ onMort }}" placeholder="0" style="width:100%; padding:12px 38px 12px 14px; border-radius:11px; border:1.5px solid #E2E8F0; background:#fff; font-size:15px; font-weight:500; color:#0F172A; font-variant-numeric:tabular-nums; outline:none; transition:border .2s, box-shadow .2s;" style-focus="border-color:#6392FF; box-shadow:0 0 0 3px rgba(99,146,255,0.2);"><span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#94A3B8;">₽</span></div></div>
+        </div>
+      </div>
+
+      <button onClick="{{ calc }}" style="width:100%; height:52px; border-radius:14px; border:none; background:#4E7BF5; color:#fff; font-family:inherit; font-weight:700; font-size:16px; cursor:pointer; box-shadow:0 10px 28px rgba(78,123,245,0.34); transition:transform .2s, filter .2s;" style-hover="transform:scale(1.01); filter:brightness(1.06);">Рассчитать</button>
+    </div>
+
+    <!-- PLACEHOLDER (before calc) -->
+    <sc-if value="{{ showPlaceholder }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top:18px; background:rgba(255,255,255,0.55); backdrop-filter:blur(20px); border:1px dashed #C7D2FE; border-radius:20px; padding:28px 24px; text-align:center;">
+        <sc-if value="{{ placeholderError }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:15px; font-weight:600; color:#EF4444;">Укажите доход выше, чтобы получить расчёт</div>
+        </sc-if>
+        <sc-if value="{{ placeholderIdle }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:15px; color:#64748B;">Введите доход выше и нажмите «Рассчитать»</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- RESULT -->
+    <sc-if value="{{ hasResult }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:18px; background:rgba(236,253,245,0.8); backdrop-filter:blur(28px) saturate(170%); border:1px solid rgba(52,211,153,0.4); border-radius:24px; padding:28px; box-shadow:0 16px 48px rgba(16,185,129,0.16); animation:fadeUp .35s ease-out both;">
+        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#059669; margin-bottom:18px;">Расчёт за {{ res.year }} год</div>
+
+        <div style="margin-bottom:20px; font-size:14px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#475569;">Годовой доход</span><span style="font-weight:600; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.incomeFmt }} ₽</span></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#475569;">НДФЛ уплаченный</span><span style="font-weight:600; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.taxPaidFmt }} ₽</span></div>
+          <div style="margin:5px 0 12px; padding-left:2px; display:grid; gap:2px;">
+            <sc-for list="{{ res.paidBreakdown }}" as="p" hint-placeholder-count="1">
+              <div style="font-size:12.5px; color:#94A3B8; font-variant-numeric:tabular-nums;">{{ p.text }}</div>
+            </sc-for>
+          </div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#475569;">НДФЛ после вычетов</span><span style="font-weight:600; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.taxAfterFmt }} ₽</span></div>
+          <div style="margin:5px 0 0; padding-left:2px; display:grid; gap:2px;">
+            <sc-if value="{{ res.baseZero }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:12.5px; color:#94A3B8;">вычеты покрыли весь доход — налог 0 ₽</div>
+            </sc-if>
+            <sc-if value="{{ res.baseNonZero }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:12.5px; color:#94A3B8; font-variant-numeric:tabular-nums;">{{ res.afterFirstLine }}</div>
+              <sc-for list="{{ res.afterBreakdown }}" as="p" hint-placeholder-count="0">
+                <div style="font-size:12.5px; color:#94A3B8; font-variant-numeric:tabular-nums;">{{ p.text }}</div>
+              </sc-for>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.6); border-radius:16px; padding:20px 22px; text-align:center; margin-bottom:18px;">
+          <div style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#059669; margin-bottom:4px;">К возврату</div>
+          <div style="font-size:clamp(34px,9vw,44px); font-weight:800; color:#064E3B; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; line-height:1;">{{ res.totalFmt }} ₽</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;">
+          <div style="background:rgba(255,255,255,0.55); border-radius:12px; padding:13px 15px;"><div style="font-size:12px; color:#64748B;">Имущественный</div><div style="font-size:16px; font-weight:700; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.propFmt }} ₽</div></div>
+          <div style="background:rgba(255,255,255,0.55); border-radius:12px; padding:13px 15px;"><div style="font-size:12px; color:#64748B;">Социальный</div><div style="font-size:16px; font-weight:700; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.socFmt }} ₽</div></div>
+          <div style="background:rgba(255,255,255,0.55); border-radius:12px; padding:13px 15px;"><div style="font-size:12px; color:#64748B;">Обучение детей</div><div style="font-size:16px; font-weight:700; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.chFmt }} ₽</div></div>
+          <div style="background:rgba(255,255,255,0.55); border-radius:12px; padding:13px 15px;"><div style="font-size:12px; color:#64748B;">ИИС</div><div style="font-size:16px; font-weight:700; color:#1E293B; font-variant-numeric:tabular-nums;">{{ res.iisFmt }} ₽</div></div>
+        </div>
+
+        <sc-if value="{{ res.over }}" hint-placeholder-val="{{ false }}">
+          <div style="background:rgba(255,251,235,0.85); border:1px solid rgba(251,191,36,0.4); border-radius:13px; padding:14px 16px; font-size:14px; line-height:1.55; color:#92400E; margin-bottom:14px;">{{ res.overText }}</div>
+        </sc-if>
+
+        <sc-if value="{{ res.hasGreen }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid; gap:8px; margin-bottom:8px;">
+            <sc-for list="{{ res.green }}" as="g" hint-placeholder-count="0">
+              <div style="display:flex; gap:10px; background:rgba(255,255,255,0.55); border-left:3px solid #10B981; border-radius:10px; padding:12px 14px; font-size:13.5px; line-height:1.5; color:#065F46;"><span>✅</span><span>{{ g.text }}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ res.hasAmber }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid; gap:8px; margin-bottom:8px;">
+            <sc-for list="{{ res.amber }}" as="a" hint-placeholder-count="0">
+              <div style="display:flex; gap:10px; background:rgba(255,251,235,0.7); border-left:3px solid #F59E0B; border-radius:10px; padding:12px 14px; font-size:13.5px; line-height:1.5; color:#92400E;"><span>🔥</span><span>{{ a.text }}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(16,185,129,0.18); display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start;">
+          <div>
+            <button onClick="{{ tog.calcHow }}" aria-expanded="{{ exp.calcHow }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; color:#4E7BF5;">Как считает калькулятор ▸</button>
+            <sc-if value="{{ exp.calcHow }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:10px; font-size:12.5px; line-height:1.6; color:#64748B;">
+                Калькулятор учитывает расходы по приоритетам:<br>
+                — ИИС (потому что можно заявить только свои взносы, и вычет не переносится на следующий год),<br>
+                — социальные расходы (не переносятся),<br>
+                — обучение детей (не переносятся),<br>
+                — имущественный (переносится на следующий год, поэтому по приоритетам находится в самом конце).
+              </div>
+            </sc-if>
+          </div>
+          <div>
+            <button onClick="{{ tog.calcTip }}" aria-expanded="{{ exp.calcTip }}" style="background:transparent; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; color:#059669;">Совет ▸</button>
+            <sc-if value="{{ exp.calcTip }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:10px; font-size:12.5px; line-height:1.6; color:#64748B; max-width:480px;">
+                Если у вас недостаточно НДФЛ, чтобы вернуть за все категории расходов, то социальные расходы или обучение детей можно оформить через второго супруга(-ги).<br>
+                Тогда вычет на семью можно получить в максимальном размере.<br><br>
+                Потому что вычет по ИИС можно заявить только за свои взносы, и он не переносится на следующий год.<br>
+                А имущественный вычет можно вернуть только через вас, но зато его можно переносить бесконечно на следующий год.
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- BLOCK 8: WHERE TO GET -->
+<section data-step="sources" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="margin-bottom:28px;">
+      <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Где получить быстро — без 3-НДФЛ</h2>
+      <p style="font-size:17px; line-height:1.62; color:#475569; margin:0;">Упрощённый порядок работает для расходов с 01.01.2024. За 2023 год — только через 3-НДФЛ.</p>
+    </div>
+
+    <div data-reveal="" style="display:grid; gap:14px;">
+      <a href="https://www.tbank.ru/finance/blog/minus-tax/" target="_blank" rel="noopener" style="display:flex; gap:16px; align-items:flex-start; text-decoration:none; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:18px; padding:20px 22px; box-shadow:0 8px 28px rgba(78,123,245,0.07); transition:transform .2s, border-color .2s;" style-hover="transform:translateY(-2px); border-color:rgba(78,123,245,0.4);">
+        <span style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#EEF4FF; font-size:22px; flex:none;">📱</span>
+        <span style="flex:1;"><span style="display:block; font-size:16px; font-weight:600; color:#1E293B; margin-bottom:3px;">Т-Банк — в приложении</span><span style="display:block; font-size:13.5px; line-height:1.55; color:#64748B; margin-bottom:10px;">Если вы платили картой Т-Банка — банк сам запрашивает справки у партнёров и отправляет в ФНС. Вам только подписать в ЛК налоговой.</span><span style="display:flex; flex-wrap:wrap; gap:6px;"><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Лечение</span><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Обучение</span><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">ИИС</span></span></span>
+        <span style="font-size:13px; font-weight:600; color:#4E7BF5; white-space:nowrap;">инструкция ↗</span>
+      </a>
+
+      <a href="https://blog.domclick.ru/ipoteka/post/kak-poluchit-uproshennyj-nalogovyj-vychet-s-pomoshyu-domklik-instrukciya" target="_blank" rel="noopener" style="display:flex; gap:16px; align-items:flex-start; text-decoration:none; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:18px; padding:20px 22px; box-shadow:0 8px 28px rgba(78,123,245,0.07); transition:transform .2s, border-color .2s;" style-hover="transform:translateY(-2px); border-color:rgba(78,123,245,0.4);">
+        <span style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#EEF4FF; font-size:22px; flex:none;">🏠</span>
+        <span style="flex:1;"><span style="display:block; font-size:16px; font-weight:600; color:#1E293B; margin-bottom:3px;">ДомКлик (Сбер) — для ипотечников</span><span style="display:block; font-size:13.5px; line-height:1.55; color:#64748B; margin-bottom:10px;">Сбер передаёт данные напрямую в ФНС. Заявление появляется в ЛК после 20 марта. Срок — 1,5 месяца вместо 4-х.</span><span style="display:flex; flex-wrap:wrap; gap:6px;"><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Покупка жилья</span><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Ипотека</span></span></span>
+        <span style="font-size:13px; font-weight:600; color:#4E7BF5; white-space:nowrap;">инструкция ↗</span>
+      </a>
+
+      <a href="https://www.sberbank.ru/ru/person/dist_services/tax_refund" target="_blank" rel="noopener" style="display:flex; gap:16px; align-items:flex-start; text-decoration:none; background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:18px; padding:20px 22px; box-shadow:0 8px 28px rgba(78,123,245,0.07); transition:transform .2s, border-color .2s;" style-hover="transform:translateY(-2px); border-color:rgba(78,123,245,0.4);">
+        <span style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#EEF4FF; font-size:22px; flex:none;">💳</span>
+        <span style="flex:1;"><span style="display:block; font-size:16px; font-weight:600; color:#1E293B; margin-bottom:3px;">СберОнлайн — в приложении</span><span style="display:block; font-size:13.5px; line-height:1.55; color:#64748B; margin-bottom:10px;">Если вы платили картой Сбера в клинике, фитнес-клубе или школе из списка партнёров — придёт уведомление в СберОнлайн. Соглашаетесь, дальше автоматически.</span><span style="display:flex; flex-wrap:wrap; gap:6px;"><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Лечение</span><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Спорт</span><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(238,244,255,0.8); color:#3B62D6;">Обучение</span></span></span>
+        <span style="font-size:13px; font-weight:600; color:#4E7BF5; white-space:nowrap;">налоговый вычет ↗</span>
+      </a>
+
+      <a href="https://lkfl2.nalog.ru/lkfl/login" target="_blank" rel="noopener" style="display:flex; gap:16px; align-items:flex-start; text-decoration:none; background:rgba(236,253,245,0.7); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(52,211,153,0.35); border-radius:18px; padding:20px 22px; box-shadow:0 8px 28px rgba(16,185,129,0.1); transition:transform .2s, border-color .2s;" style-hover="transform:translateY(-2px); border-color:rgba(52,211,153,0.6);">
+        <span style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:13px; background:#fff; font-size:22px; flex:none;">📋</span>
+        <span style="flex:1;"><span style="display:block; font-size:16px; font-weight:600; color:#064E3B; margin-bottom:3px;">Личный кабинет ФНС — универсально</span><span style="display:block; font-size:13.5px; line-height:1.55; color:#065F46; margin-bottom:10px;">После 20 марта ФНС собирает данные от банков и работодателей. Находите предзаполненное заявление, проверяете, подписываете. Деньги в среднем за 8 дней.</span><span style="display:flex; flex-wrap:wrap; gap:6px;"><span style="font-size:11.5px; padding:4px 9px; border-radius:8px; background:rgba(255,255,255,0.7); color:#059669;">Все виды вычетов</span></span></span>
+        <span style="font-size:13px; font-weight:600; color:#059669; white-space:nowrap;">lkfl2.nalog.ru ↗</span>
+      </a>
+
+
+    </div>
+
+
+  </div>
+</section>
+
+<!-- BLOCK 9: PRACTICE CAROUSEL -->
+<section data-step="cases" style="position:relative; z-index:1; padding:80px 24px 0; display:flex; justify-content:center;">
+  <div style="width:100%; max-width:760px;">
+    <div data-reveal="" style="margin-bottom:24px;">
+      <h2 style="font-size:clamp(26px,4vw,36px); font-weight:700; line-height:1.18; margin:0 0 12px; color:#0F172A; letter-spacing:-0.02em;">Разборы из практики</h2>
+      <p style="font-size:17px; line-height:1.62; color:#475569; margin:0;">Реальные ситуации — как не потерять деньги и забрать максимум.</p>
+    </div>
+
+    <div data-reveal="" style="background:rgba(255,255,255,0.65); backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.85); border-radius:24px; box-shadow:0 12px 40px rgba(78,123,245,0.1); overflow:hidden;">
+      <div style="overflow:hidden;" aria-live="polite">
+        <div data-carousel-track="" style="display:flex; width:400%; transform:{{ trackTransform }}; transition:transform .4s cubic-bezier(0.4,0,0.2,1);">
+
+          <div style="width:25%; flex:none; padding:30px 32px;">
+            <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#94A3B8; margin-bottom:8px;">Кейс 1 · обучение</div>
+            <h3 style="font-size:21px; font-weight:700; margin:0 0 14px; color:#1E293B; line-height:1.25;">Оплатили обучение за 3 года вперёд — потеряли половину вычета</h3>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 16px;">Клиент заплатил 300 000 ₽ сразу за три года обучения. Всё в одном чеке, в одном году. Лимит вычета за год — 150 000 ₽. Остаток на следующий год не переносится.</p>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 18px;">В итоге вернули только 19 500 ₽. А могли бы — 39 000 ₽, если бы разбили оплату на два года по 150 000 ₽.</p>
+            <div style="background:rgba(255,251,235,0.85); border:1px solid rgba(251,191,36,0.4); border-radius:14px; padding:14px 16px; font-size:14.5px; line-height:1.55; color:#92400E;"><strong>Вывод:</strong> платите за обучение по годам, не вперёд. Лишнее сгорает.</div>
+          </div>
+
+          <div style="width:25%; flex:none; padding:30px 32px;">
+            <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#94A3B8; margin-bottom:8px;">Кейс 2 · через супруга</div>
+            <h3 style="font-size:21px; font-weight:700; margin:0 0 14px; color:#1E293B; line-height:1.25;">Жена в декрете — муж вернул за её лечение</h3>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 16px;">Жена потратила 90 000 ₽ на лечение зубов. В декрете НДФЛ не платила, подать не могла.</p>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 18px;">Муж оформил вычет на себя. В его справке от работодателя за год уплачено 95 000 ₽ НДФЛ. Подал через ЛК ФНС, приложил справку из клиники и свидетельство о браке.</p>
+            <div style="background:rgba(236,253,245,0.8); border:1px solid rgba(52,211,153,0.4); border-radius:14px; padding:14px 16px; font-size:14.5px; line-height:1.55; color:#065F46;"><strong>Вернули 11 700 ₽.</strong> Деньги пришли мужу на счёт.</div>
+          </div>
+
+          <div style="width:25%; flex:none; padding:30px 32px;">
+            <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#94A3B8; margin-bottom:8px;">Кейс 3 · без лимита</div>
+            <h3 style="font-size:21px; font-weight:700; margin:0 0 14px; color:#1E293B; line-height:1.25;">Зубные импланты — вычет без лимита</h3>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 16px;">Клиентка поставила два импланта — 185 000 ₽. Обычный лимит соцвычета 150 000 ₽. Но имплантация с костной пластикой относится к дорогостоящему лечению (перечень Правительства РФ, код услуги 2). Клиника выдала справку с кодом 2.</p>
+            <div style="background:rgba(236,253,245,0.8); border:1px solid rgba(52,211,153,0.4); border-radius:14px; padding:14px 16px; font-size:14.5px; line-height:1.55; color:#065F46; margin-bottom:12px;"><strong>Вернули:</strong> 185 000 × 13% = 24 050 ₽ вместо 19 500 ₽ при обычном лимите.</div>
+            <div style="background:rgba(255,251,235,0.85); border:1px solid rgba(251,191,36,0.4); border-radius:14px; padding:14px 16px; font-size:14px; line-height:1.55; color:#92400E;">Проверьте код в справке заранее. Обычное протезирование без имплантов идёт по коду 1 — туда лимит применяется.</div>
+          </div>
+
+          <div style="width:25%; flex:none; padding:30px 32px;">
+            <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:#94A3B8; margin-bottom:8px;">Кейс 4 · порядок</div>
+            <h3 style="font-size:21px; font-weight:700; margin:0 0 14px; color:#1E293B; line-height:1.25;">Соцвычет и имущественный в одном году — важен порядок</h3>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 16px;">Клиент купил квартиру и платил за лечение. За год уплатил НДФЛ — 45 000 ₽. Социальный вычет — 18 000 ₽, имущественный — большой, растянется на годы.</p>
+            <p style="font-size:15px; line-height:1.62; color:#475569; margin:0 0 18px;">Если сначала подать имущественный — заберёт все 45 000 ₽, соцвычет сгорит. Если сначала соцвычет — вернут 18 000 ₽, остаток 27 000 ₽ пойдёт на имущественный и перенесётся дальше.</p>
+            <div style="background:rgba(236,253,245,0.8); border:1px solid rgba(52,211,153,0.4); border-radius:14px; padding:14px 16px; font-size:14.5px; line-height:1.55; color:#065F46;"><strong>Вывод:</strong> сначала всегда подавайте социальные вычеты. Имущественный переносится, социальный — нет.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 24px; border-top:1px solid #EEF2F7;">
+        <button onClick="{{ prevSlide }}" aria-label="Предыдущий слайд" style="width:40px; height:40px; border-radius:11px; border:1px solid #E2E8F0; background:#fff; color:#475569; cursor:pointer; font-size:18px; transition:all .2s;" style-hover="border-color:#4E7BF5; color:#4E7BF5;">‹</button>
+        <div style="display:flex; gap:8px;">
+          <button onClick="{{ goSlide0 }}" aria-label="Слайд 1" style="width:9px; height:9px; padding:0; border-radius:50%; border:none; cursor:pointer; background:{{ dot0 }}; transition:all .2s;"></button>
+          <button onClick="{{ goSlide1 }}" aria-label="Слайд 2" style="width:9px; height:9px; padding:0; border-radius:50%; border:none; cursor:pointer; background:{{ dot1 }}; transition:all .2s;"></button>
+          <button onClick="{{ goSlide2 }}" aria-label="Слайд 3" style="width:9px; height:9px; padding:0; border-radius:50%; border:none; cursor:pointer; background:{{ dot2 }}; transition:all .2s;"></button>
+          <button onClick="{{ goSlide3 }}" aria-label="Слайд 4" style="width:9px; height:9px; padding:0; border-radius:50%; border:none; cursor:pointer; background:{{ dot3 }}; transition:all .2s;"></button>
+        </div>
+        <button onClick="{{ nextSlide }}" aria-label="Следующий слайд" style="width:40px; height:40px; border-radius:11px; border:1px solid #E2E8F0; background:#fff; color:#475569; cursor:pointer; font-size:18px; transition:all .2s;" style-hover="border-color:#4E7BF5; color:#4E7BF5;">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="position:relative; z-index:1; padding:80px 24px 64px; display:flex; flex-direction:column; align-items:center; text-align:center; margin-top:40px;">
+  <div data-reveal="" style="max-width:520px;">
+    <a href="https://t.me/marina_neurobuh" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:9px; padding:14px 26px; border-radius:24px; background:#4E7BF5; color:#fff; text-decoration:none; font-weight:600; font-size:15px; box-shadow:0 10px 28px rgba(78,123,245,0.32); transition:transform .2s, filter .2s;" style-hover="transform:translateY(-2px); filter:brightness(1.05);">✈️ Нужны услуги бухгалтера? Нажмите</a>
+    <p style="font-size:12.5px; color:#94A3B8; margin:28px 0 0;">© 2026 · Информация носит ознакомительный характер</p>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    year: 2025,
+    mode: 'month',
+    income: 0,
+    med: 0, drugs: 0, edu: 0, sport: 0, expensive: 0, iis: 0, property: 0, mortgage: 0,
+    children: [0],
+    yearData: { 2023: null, 2024: null, 2025: null, 2026: null },
+    result: null,
+    triedEmpty: false,
+    carousel: 0,
+    active: 'chapter1',
+    exp: { whatIs: false, c1med: false, c1drugs: false, c1edu: false, c1sport: false, c2list: false, c5list: false, c5mort: false, c5buy: false, c3list: false, c3tip: false, calcHow: false, calcTip: false },
+  };
+
+  componentDidMount() {
+    // restore
+    try {
+      const raw = localStorage.getItem('ndfl_state_v1');
+      if (raw) {
+        const d = JSON.parse(raw);
+        this.setState(s => ({ ...s, ...d, yearData: d.yearData || s.yearData, exp: s.exp, result: null }));
+      }
+    } catch (e) {}
+
+    // reveal animation
+    const revObs = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          const delay = en.target._revDelay || 0;
+          en.target.style.animationDelay = delay + 'ms';
+          en.target.style.animation = 'fadeUp 0.55s cubic-bezier(0.4,0,0.2,1) both';
+          revObs.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      const delay = el.hasAttribute('data-stagger') ? (parseInt(el.getAttribute('data-stagger')) * 90) : 0;
+      el._revDelay = delay;
+      revObs.observe(el);
+    });
+
+    // scroll-spy
+    const spyObs = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          const id = en.target.getAttribute('data-step');
+          if (id) this.setState(s => ({ active: id }));
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('[data-step]').forEach(el => spyObs.observe(el));
+
+    // sidebar visibility
+    const checkWide = () => {
+      const sb = document.querySelector('[data-sidebar]');
+      if (sb) sb.style.display = window.innerWidth >= 1180 ? 'flex' : 'none';
+    };
+    checkWide();
+    window.addEventListener('resize', checkWide);
+    this._checkWide = checkWide;
+
+    // Touch swipe for carousel
+    const track = document.querySelector('[data-carousel-track]');
+    if (track) {
+      let startX = 0;
+      track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) < 40) return;
+        const total = 4;
+        const cur = this.state.carousel;
+        if (dx < 0 && cur < total - 1) this.setState(s => ({ carousel: s.carousel + 1 }));
+        if (dx > 0 && cur > 0) this.setState(s => ({ carousel: s.carousel - 1 }));
+      }, { passive: true });
+    }
+  }
+
+  persist() {
+    try {
+      const s = this.state;
+      const d = { year: s.year, mode: s.mode, income: s.income, med: s.med, drugs: s.drugs, edu: s.edu, sport: s.sport, expensive: s.expensive, iis: s.iis, property: s.property, mortgage: s.mortgage, yearData: s.yearData, children: s.children };
+      localStorage.setItem('ndfl_state_v1', JSON.stringify(d));
+    } catch (e) {}
+  }
+
+  fmt(n) { return String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  parse(v) { const n = parseInt(String(v).replace(/[^\d]/g, ''), 10); return isNaN(n) ? 0 : n; }
+
+  getTax(year, a) {
+    if (a <= 0) return 0;
+    if (year >= 2025) {
+      if (a <= 2400000) return a * 0.13;
+      if (a <= 5000000) return 312000 + (a - 2400000) * 0.15;
+      if (a <= 20000000) return 702000 + (a - 5000000) * 0.18;
+      if (a <= 50000000) return 3402000 + (a - 20000000) * 0.20;
+      return 9402000 + (a - 50000000) * 0.22;
+    }
+    if (a <= 5000000) return a * 0.13;
+    return 650000 + (a - 5000000) * 0.15;
+  }
+  getRate(year, a) {
+    if (year >= 2025) {
+      if (a <= 2400000) return 13;
+      if (a <= 5000000) return 15;
+      if (a <= 20000000) return 18;
+      if (a <= 50000000) return 20;
+      return 22;
+    }
+    return a <= 5000000 ? 13 : 15;
+  }
+
+  annualIncome() { return this.state.mode === 'month' ? this.state.income * 12 : this.state.income; }
+
+  // breakdown of НДФЛ by progressive bracket, only chunks > 0
+  rateBreakdown(year, amount) {
+    const parts = [];
+    const add = (rate, chunk) => { if (chunk > 0) parts.push({ text: Math.round(rate * 100) + '% × ' + this.fmt(chunk) + ' = ' + this.fmt(chunk * rate) + ' ₽' }); };
+    if (year >= 2025) {
+      add(0.13, Math.min(amount, 2400000));
+      add(0.15, Math.min(amount, 5000000) - 2400000);
+      add(0.18, Math.min(amount, 20000000) - 5000000);
+      add(0.20, Math.min(amount, 50000000) - 20000000);
+      add(0.22, amount - 50000000);
+    } else {
+      add(0.13, Math.min(amount, 5000000));
+      add(0.15, amount - 5000000);
+    }
+    return parts;
+  }
+
+  _fieldSnapshot(s) {
+    return { mode: s.mode, income: s.income, med: s.med, drugs: s.drugs, edu: s.edu, sport: s.sport, expensive: s.expensive, iis: s.iis, property: s.property, mortgage: s.mortgage, children: s.children.slice() };
+  }
+  _emptyFields() {
+    return { mode: 'month', income: 0, med: 0, drugs: 0, edu: 0, sport: 0, expensive: 0, iis: 0, property: 0, mortgage: 0, children: [0] };
+  }
+  setYear(y) {
+    this.setState(s => {
+      const saved = this._fieldSnapshot(s);
+      const next = (s.yearData && s.yearData[y]) ? s.yearData[y] : this._emptyFields();
+      return { year: y, result: null, yearData: { ...s.yearData, [s.year]: saved }, ...next };
+    });
+  }
+  setMode(m) { this.setState(s => ({ mode: m, result: null })); }
+  setField(k, v) { const val = this.parse(v); this.setState(s => ({ [k]: val, result: null })); }
+  setChild(i, v) {
+    const val = this.parse(v);
+    this.setState(s => { const c = s.children.slice(); c[i] = val; return { children: c, result: null }; });
+  }
+  addChild() { this.setState(s => ({ children: s.children.concat([0]) })); }
+  removeChild(i) { this.setState(s => { const c = s.children.slice(); c.splice(i, 1); return { children: c.length ? c : [0], result: null }; }); }
+  toggle(k) { this.setState(s => ({ exp: { ...s.exp, [k]: !s.exp[k] } })); }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState) return;
+    const keys = ['year','mode','income','med','drugs','edu','sport','expensive','iis','property','mortgage','children','yearData'];
+    if (keys.some(k => prevState[k] !== this.state[k])) this.persist();
+  }
+
+  calculate() {
+    const s = this.state, year = s.year;
+    const income = this.annualIncome();
+    if (income <= 0) { this.setState(st => ({ result: null, triedEmpty: true })); return; }
+    const socLim = year >= 2024 ? 150000 : 120000;
+    const cLim = year >= 2024 ? 110000 : 50000;
+
+    const socRaw = s.med + s.drugs + s.edu + s.sport;
+    const socCapped = Math.min(socRaw, socLim);
+    const dS = socCapped + s.expensive;
+
+    const childrenRaw = s.children.reduce((a, b) => a + b, 0);
+    const dC = s.children.reduce((a, b) => a + Math.min(b, cLim), 0);
+
+    const dI = Math.min(s.iis, 400000);
+    const dP = Math.min(s.property, 2000000) + Math.min(s.mortgage, 3000000);
+
+    let base = income;
+    const T = (x) => this.getTax(year, x);
+
+    const rI = T(base) - T(Math.max(0, base - dI)); const iisUsed = Math.min(dI, base); base = Math.max(0, base - dI);
+    const rS = T(base) - T(Math.max(0, base - dS)); const socUsed = Math.min(dS, base); base = Math.max(0, base - dS);
+    const rC = T(base) - T(Math.max(0, base - dC)); const chUsed = Math.min(dC, base); base = Math.max(0, base - dC);
+    const rP = T(base) - T(Math.max(0, base - dP)); const propUsed = Math.min(dP, base); base = Math.max(0, base - dP);
+
+    const taxPaid = T(income);
+    const total = Math.min(rI + rS + rC + rP, taxPaid);
+    const taxAfter = Math.max(0, taxPaid - total);
+    const propCarry = dP - propUsed;
+
+    const green = [], amber = [];
+    if (propCarry > 0) green.push({ text: 'Имущественный вычет: использовано ' + this.fmt(propUsed) + ' ₽ в ' + year + ' году. Остаток ' + this.fmt(propCarry) + ' ₽ переносится и можно заявить в последующих годах.' });
+    if (dI > iisUsed) amber.push({ text: 'ИИС: вычет ' + this.fmt(iisUsed) + ' ₽ использован частично — не хватает НДФЛ. Неиспользованные ' + this.fmt(dI - iisUsed) + ' ₽ сгорают, не переносятся.' });
+    if (socRaw > socLim) amber.push({ text: 'Социальные расходы: сумма ' + this.fmt(socRaw) + ' ₽ превышает лимит ' + this.fmt(socLim) + ' ₽. Лишние ' + this.fmt(socRaw - socLim) + ' ₽ сгорают. Но если у второго супруга(-ги) есть НДФЛ — можно заявить оставшуюся часть через него (неё). У каждого свой лимит ' + this.fmt(socLim) + ' ₽.' });
+    else if (dS > socUsed) amber.push({ text: 'Социальные расходы: вычет ' + this.fmt(socUsed) + ' ₽ использован частично — не хватает НДФЛ. Неиспользованные ' + this.fmt(dS - socUsed) + ' ₽ сгорают, не переносятся. Но если у второго супруга(-ги) есть НДФЛ — можно заявить оставшуюся часть через него (неё).' });
+    if (childrenRaw > dC) amber.push({ text: 'Обучение детей: сумма ' + this.fmt(childrenRaw) + ' ₽ превышает лимит ' + this.fmt(cLim) + ' ₽ на ребёнка. Лишние ' + this.fmt(childrenRaw - dC) + ' ₽ сгорают, не переносятся.' });
+    else if (dC > chUsed) amber.push({ text: 'Обучение детей: вычет ' + this.fmt(chUsed) + ' ₽ использован частично — не хватает НДФЛ. Неиспользованные ' + this.fmt(dC - chUsed) + ' ₽ сгорают, не переносятся. Но если у второго супруга(-ги) есть НДФЛ — можно заявить оставшуюся часть через него (неё). Лимит устанавливается на одного ребёнка.' });
+
+    const over = (rI + rS + rC + rP) > taxPaid;
+
+    const deductSum = income - base; // all deductions actually applied
+    const paidBreakdown = this.rateBreakdown(year, income);
+    const baseZero = base <= 0;
+    const afterBreakdown = baseZero ? [] : this.rateBreakdown(year, base);
+
+    const res = {
+      year, incomeFmt: this.fmt(income), rate: this.getRate(year, income),
+      taxPaidFmt: this.fmt(taxPaid), taxAfterFmt: this.fmt(taxAfter), totalRaw: total, totalFmt: this.fmt(total),
+      propFmt: this.fmt(rP), socFmt: this.fmt(rS), chFmt: this.fmt(rC), iisFmt: this.fmt(rI),
+      over, overText: over ? ('Рассчитанная сумма (' + this.fmt(rI + rS + rC + rP) + ' ₽) превышает уплаченный налог. Вернут не больше ' + this.fmt(total) + ' ₽.') : '',
+      green, amber, hasGreen: green.length > 0, hasAmber: amber.length > 0,
+      hasIncome: income > 0,
+      paidBreakdown,
+      baseZero, baseNonZero: !baseZero,
+      afterFirstLine: this.fmt(income) + ' − ' + this.fmt(deductSum) + ' = ' + this.fmt(base) + ' ₽',
+      afterBreakdown,
+    };
+    this.setState(s => ({ result: res, triedEmpty: false }));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const order = [
+      { id: 'chapter1', href: '#chapter1', label: 'Социальный вычет' },
+      { id: 'chapter2', href: '#chapter2', label: 'Дорогостоящее лечение' },
+      { id: 'chapter3', href: '#chapter3', label: 'Обучение ребёнка' },
+      { id: 'chapter4', href: '#chapter4', label: 'Инвестиции — ИИС' },
+      { id: 'chapter5', href: '#chapter5', label: 'Имущественный вычет' },
+      { id: 'calculator', href: '#calculator', label: 'Калькулятор' },
+    ];
+    const activeIdx = Math.max(0, order.findIndex(o => o.id === s.active));
+    const steps = order.map((o, i) => {
+      const isActive = i === activeIdx;
+      const done = i < activeIdx;
+      return {
+        href: o.href, label: o.label,
+        dotColor: isActive ? '#4E7BF5' : done ? '#10B981' : '#CBD5E1',
+        ring: isActive ? 'rgba(78,123,245,0.18)' : 'transparent',
+        textColor: isActive ? '#3B62D6' : done ? '#64748B' : '#94A3B8',
+        weight: isActive ? 700 : 500,
+      };
+    });
+
+    const income = this.annualIncome();
+    const annualHint = s.income > 0
+      ? (s.mode === 'month' ? '= ' + this.fmt(s.income * 12) + ' ₽ в год' : '≈ ' + this.fmt(Math.round(s.income / 12)) + ' ₽/мес')
+      : '';
+    const rate = this.getRate(s.year, income);
+
+    const activeRate = income > 0 ? rate : 0;
+    const rChip = (pct) => activeRate === pct ? { bg: '#3B62D6', col: '#fff', wt: '700' } : { bg: 'rgba(238,244,255,0.7)', col: '#475569', wt: '400' };
+    const chip13 = rChip(13), chip15 = rChip(15), chip18 = rChip(18), chip20 = rChip(20), chip22 = rChip(22);
+
+    const childList = s.children.map((v, i) => ({
+      i, idx: i + 1, val: v ? this.fmt(v) : '',
+      onInput: (e) => this.setChild(i, e.target.value),
+      onRemove: () => this.removeChild(i),
+      canRemove: s.children.length > 1,
+    }));
+
+    const res = s.result || {};
+    const fieldH = (k) => (e) => this.setField(k, e.target.value);
+
+    const yb = (y) => ({
+      bg: s.year === y ? '#4E7BF5' : 'rgba(255,255,255,0.7)',
+      color: s.year === y ? '#fff' : '#64748B',
+      border: s.year === y ? '#4E7BF5' : '#E2E8F0',
+    });
+    const y23 = yb(2023), y24 = yb(2024), y25 = yb(2025), y26 = yb(2026);
+    const mActive = s.mode === 'month';
+
+    return {
+      year: s.year, mode: s.mode,
+      setY23: () => this.setYear(2023), setY24: () => this.setYear(2024), setY25: () => this.setYear(2025), setY26: () => this.setYear(2026),
+      setMonth: () => this.setMode('month'), setYearMode: () => this.setMode('year'),
+      isMonth: s.mode === 'month', isYear: s.mode === 'year',
+      y23bg: y23.bg, y23color: y23.color, y23border: y23.border,
+      y24bg: y24.bg, y24color: y24.color, y24border: y24.border,
+      y25bg: y25.bg, y25color: y25.color, y25border: y25.border,
+      y26bg: y26.bg, y26color: y26.color, y26border: y26.border,
+      monthBg: mActive ? '#fff' : 'transparent', monthColor: mActive ? '#3B62D6' : '#64748B', monthShadow: mActive ? '0 2px 6px rgba(78,123,245,0.18)' : 'none',
+      yearBg: !mActive ? '#fff' : 'transparent', yearColor: !mActive ? '#3B62D6' : '#64748B', yearShadow: !mActive ? '0 2px 6px rgba(78,123,245,0.18)' : 'none',
+      hasIncomeInput: s.income > 0,
+      isNewScale: s.year >= 2025,
+      rate13bg: chip13.bg, rate13color: chip13.col, rate13weight: chip13.wt,
+      rate15bg: chip15.bg, rate15color: chip15.col, rate15weight: chip15.wt,
+      rate18bg: chip18.bg, rate18color: chip18.col, rate18weight: chip18.wt,
+      rate20bg: chip20.bg, rate20color: chip20.col, rate20weight: chip20.wt,
+      rate22bg: chip22.bg, rate22color: chip22.col, rate22weight: chip22.wt,
+      incomeLabel: s.mode === 'month' ? 'Средняя зарплата в месяц, включая НДФЛ' : ('Доход за ' + s.year + ' год, включая НДФЛ'),
+      incomeVal: s.income ? this.fmt(s.income) : '',
+      onIncome: (e) => this.setField('income', e.target.value),
+      annualHint,
+      rateText: rate + '% — ' + (rate === 13 ? 'у большинства именно такая' : 'по вашему доходу'),
+      isOldScale: s.year <= 2024,
+      socLimFmt: s.year >= 2024 ? '150 000' : '120 000',
+      cLimFmt: s.year >= 2024 ? '110 000 ₽ на каждого ребёнка' : '50 000 ₽ на каждого ребёнка',
+      showPlaceholder: !s.result,
+      placeholderError: !!s.triedEmpty,
+      placeholderIdle: !s.result && !s.triedEmpty,
+
+      medVal: s.med ? this.fmt(s.med) : '', onMed: fieldH('med'),
+      drugsVal: s.drugs ? this.fmt(s.drugs) : '', onDrugs: fieldH('drugs'),
+      eduVal: s.edu ? this.fmt(s.edu) : '', onEdu: fieldH('edu'),
+      sportVal: s.sport ? this.fmt(s.sport) : '', onSport: fieldH('sport'),
+      expVal: s.expensive ? this.fmt(s.expensive) : '', onExp: fieldH('expensive'),
+      iisVal: s.iis ? this.fmt(s.iis) : '', onIis: fieldH('iis'),
+      propVal: s.property ? this.fmt(s.property) : '', onProp: fieldH('property'),
+      mortVal: s.mortgage ? this.fmt(s.mortgage) : '', onMort: fieldH('mortgage'),
+
+      childList, addChild: () => this.addChild(),
+      calc: () => this.calculate(),
+
+      hasResult: !!s.result, res,
+
+      exp: s.exp,
+      tog: {
+        whatIs: () => this.toggle('whatIs'),
+        c1med: () => this.toggle('c1med'), c1drugs: () => this.toggle('c1drugs'),
+        c1edu: () => this.toggle('c1edu'), c1sport: () => this.toggle('c1sport'),
+        c2list: () => this.toggle('c2list'), c5list: () => this.toggle('c5list'),
+        c3list: () => this.toggle('c3list'),
+        c5mort: () => this.toggle('c5mort'),
+        c5buy: () => this.toggle('c5buy'),
+        calcHow: () => this.toggle('calcHow'),
+        calcTip: () => this.toggle('calcTip'),
+        c3tip: () => this.toggle('c3tip'),
+      },
+      whatIsLabel: s.exp.whatIs ? 'свернуть ▴' : 'объяснить ▸',
+      c3tipLabel: s.exp.c3tip ? 'свернуть ▴' : 'читать ▸',
+
+      steps,
+
+      carousel: s.carousel,
+      trackTransform: 'translateX(' + (-s.carousel * 25) + '%)',
+      nextSlide: () => this.setState(st => ({ carousel: (st.carousel + 1) % 4 })),
+      prevSlide: () => this.setState(st => ({ carousel: (st.carousel + 3) % 4 })),
+      goSlide0: () => this.setState(st => ({ carousel: 0 })), goSlide1: () => this.setState(st => ({ carousel: 1 })),
+      goSlide2: () => this.setState(st => ({ carousel: 2 })), goSlide3: () => this.setState(st => ({ carousel: 3 })),
+      dot0: s.carousel === 0 ? '#4E7BF5' : '#CBD5E1', dot1: s.carousel === 1 ? '#4E7BF5' : '#CBD5E1',
+      dot2: s.carousel === 2 ? '#4E7BF5' : '#CBD5E1', dot3: s.carousel === 3 ? '#4E7BF5' : '#CBD5E1',
+    };
+  }
+}
+</script>
+</body>
+</html>
